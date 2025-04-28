@@ -13,7 +13,7 @@ st.set_page_config(page_title="Amazon Home & Electronics Deals", layout="wide")
 st.markdown(
     '''
     <div style="display: flex; align-items: center; justify-content: center; margin-bottom: 20px;">
-        <img src="https://github.com/jpatel1102/deep-learning-amazon-deals/blob/main/logo.png" width="120">
+        <img src="logo.png" width="120">
         <h1 style="padding-left: 20px; font-size: 2.5em;">Deep Learning Amazon Deals Advisor</h1>
     </div>
     ''',
