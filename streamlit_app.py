@@ -66,7 +66,15 @@ def mock_predict_future_price(current_price):
 
 @st.cache_resource
 def load_llm():
-    return pipeline("text-classification", model="distilbert-base-uncased-finetuned-sst-2-english")
+    class MockLLM:
+        def __call__(self, text):
+            if "good" in text.lower() or "best" in text.lower():
+                return [{"label": "POSITIVE"}]
+            else:
+                return [{"label": "NEGATIVE"}]
+    
+    return MockLLM()
+
 
 def recommend_deal(llm_pipeline, title):
     result = llm_pipeline(title)
