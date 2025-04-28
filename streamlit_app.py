@@ -93,7 +93,12 @@ max_price = st.sidebar.slider('Maximum Price ($)', 50, 2000, 500)
 min_rating = st.sidebar.slider('Minimum Rating', 0.0, 5.0, 3.5, 0.1)
 
 # Filter deals
-deals_df['current_price'] = deals_df['currentPrices.CURRENT']
+try:
+    # try real Keepa field
+    deals_df['current_price'] = deals_df['currentPrices.CURRENT']
+except KeyError:
+    # fallback: already using mock 'current_price'
+    pass
 deals_df = deals_df[(deals_df['current_price'] >= min_price) & (deals_df['current_price'] <= max_price)]
 
 # Mock rating field
