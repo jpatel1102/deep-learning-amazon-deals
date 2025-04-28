@@ -1,33 +1,95 @@
 import streamlit as st
+import keepa
 import pandas as pd
-import tensorflow as tf
-import numpy as np
-from sklearn.preprocessing import MinMaxScaler
+import time
+from datetime import datetime
+from transformers import pipeline
 
-st.title("🏡📺 Amazon Home and Electrical Deals Advisor")
+# --------------------
+# Page Configuration
+# --------------------
+st.set_page_config(page_title="Amazon Home & Electronics Deals", layout="wide")
 
-# Load
-df = pd.read_csv("../data/cleaned_deals.csv")
-model = tf.keras.models.load_model("../models/price_predictor_lstm.h5")
+st.markdown(
+    '''
+    <div style="display: flex; align-items: center; justify-content: center; margin-bottom: 20px;">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/a/ab/Logo_TV_2015.png" width="120">
+        <h1 style="padding-left: 20px; font-size: 2.5em;">Deep Learning Amazon Deals Advisor</h1>
+    </div>
+    ''',
+    unsafe_allow_html=True
+)
 
-# Show Table
-st.subheader("Top Deals Today!")
-st.dataframe(df.sort_values(by="Drop Percentage", ascending=False).head(10))
+# --------------------
+# Helper Functions
+# --------------------
 
-# Prediction Area
-st.subheader("Predict Future Price")
+def fetch_deals():
+    api = keepa.Keepa(st.secrets["keepa"]["api_key"])
+    deals = api.query_deals(domain='US', price_category='new', page=0, perPage=50)
+    df = pd.json_normalize(deals)
+    return df
 
-product = st.selectbox("Select Product", df["Title"])
+def mock_predict_future_price(current_price):
+    drop_percent = 0.05 + 0.1 * (time.time() % 1)
+    future_price = current_price * (1 - drop_percent)
+    return round(future_price, 2)
 
-idx = df[df["Title"] == product].index[0]
-price = df.iloc[idx]["Current Price"]
-prices = np.array([price]*5).reshape(-1,1)
+@st.cache_resource
+def load_llm():
+    return pipeline("text-classification", model="distilbert-base-uncased-finetuned-sst-2-english")
 
-scaler = MinMaxScaler()
-prices_scaled = scaler.fit_transform(prices)
+def recommend_deal(llm_pipeline, title):
+    result = llm_pipeline(title)
+    return result[0]['label']
 
-X_input = prices_scaled.reshape((1, prices_scaled.shape[0], 1))
-predicted_price_scaled = model.predict(X_input)
-predicted_price = scaler.inverse_transform(predicted_price_scaled)
+# --------------------
+# Main App
+# --------------------
 
-st.success(f"Predicted next price: **${predicted_price.flatten()[0]:.2f}**")
+st.sidebar.header("Settings")
+refresh = st.sidebar.button("🔄 Refresh Deals")
+
+# Fetch deals
+with st.spinner('Fetching live Amazon deals...'):
+    deals_df = fetch_deals()
+
+# Focus on Home & Electronics categories
+categories_of_interest = ['Electronics', 'Home & Kitchen', 'Appliances']
+deals_df = deals_df[deals_df['categoryTree'].astype(str).str.contains('|'.join(categories_of_interest))]
+
+# Basic filters
+min_price = st.sidebar.slider('Minimum Price ($)', 0, 500, 20)
+max_price = st.sidebar.slider('Maximum Price ($)', 50, 2000, 500)
+min_rating = st.sidebar.slider('Minimum Rating', 0.0, 5.0, 3.5, 0.1)
+
+# Filter deals
+deals_df['current_price'] = deals_df['currentPrices.CURRENT']
+deals_df = deals_df[(deals_df['current_price'] >= min_price) & (deals_df['current_price'] <= max_price)]
+
+# Mock rating field
+deals_df['rating'] = 3.5 + (deals_df.index % 2) * 1.0
+deals_df = deals_df[deals_df['rating'] >= min_rating]
+
+# Load LLM for recommendation
+llm = load_llm()
+
+st.subheader("🔥 Top Home & Electronics Deals")
+
+# Display deals
+cols = st.columns(2)
+for idx, row in deals_df.iterrows():
+    with cols[idx % 2]:
+        st.image(row['imagesCSV'].split(',')[0] if pd.notna(row['imagesCSV']) else "https://via.placeholder.com/150", width=150)
+        st.markdown(f"### {row['title'][:60]}...")
+        st.markdown(f"**Current Price:** ${row['current_price']}")
+        future_price = mock_predict_future_price(row['current_price'])
+        st.markdown(f"**Predicted Future Price:** ${future_price}")
+        recommendation = recommend_deal(llm, row['title'])
+        if recommendation == 'POSITIVE':
+            st.success("✅ Recommended Deal!")
+        else:
+            st.warning("⚠️ Not Highly Recommended")
+        st.markdown("---")
+
+st.success("Data loaded and displayed successfully!")
