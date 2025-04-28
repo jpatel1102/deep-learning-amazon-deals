@@ -8,7 +8,7 @@ import os
 # ---------------
 # SETTINGS
 # ---------------
-API_KEY = "your-keepa-api-key-here"   # <-- Replace this with your real Keepa API key
+API_KEY = "3kj4vv6neism9vvejf9515cva29hhcr2td3qfumps2o329p0j5jvdffm8oldkfaq"   # <-- Replace this with your real Keepa API key
 ASIN_LIST = [
     "B07PGL2ZSL",  # Echo Dot (Electronics)
     "B08N5WRWNW",  # Fire TV Stick
