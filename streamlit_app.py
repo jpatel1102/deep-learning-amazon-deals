@@ -13,7 +13,7 @@ st.set_page_config(page_title="Amazon Home & Electronics Deals", layout="wide")
 st.markdown(
     '''
     <div style="display: flex; align-items: center; justify-content: center; margin-bottom: 20px;">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/a/ab/Logo_TV_2015.png" width="120">
+        <img src="https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.facebook.com%2Famazonsalesdeals%2F&psig=AOvVaw2m6ddnnobathsHC-S3bf4p&ust=1745967995610000&source=images&cd=vfe&opi=89978449&ved=0CBEQjRxqFwoTCJi1kOjr-4wDFQAAAAAdAAAAABAE" width="120">
         <h1 style="padding-left: 20px; font-size: 2.5em;">Deep Learning Amazon Deals Advisor</h1>
     </div>
     ''',
