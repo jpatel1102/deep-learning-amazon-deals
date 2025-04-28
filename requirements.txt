@@ -8,3 +8,7 @@ seaborn
 streamlit
 transformers
 torch
+streamlit
+pandas
+keepa
+transformers
