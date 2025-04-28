@@ -25,7 +25,8 @@ st.markdown(
 # --------------------
 
 def fetch_deals():
-    api = keepa.Keepa(st.secrets["keepa"]["3kj4vv6neism9vvejf9515cva29hhcr2td3qfumps2o329p0j5jvdffm8oldkfaq"])
+    api_key = "3kj4vv6neism9vvejf9515cva29hhcr2td3qfumps2o329p0j5jvdffm8oldkfaq"  # <<-- directly here
+    api = keepa.Keepa(api_key)
     deals = api.query_deals(domain='US', price_category='new', page=0, perPage=50)
     df = pd.json_normalize(deals)
     return df
