@@ -25,23 +25,38 @@ st.markdown(
 # --------------------
 
 def fetch_deals():
-    api_key = "your-keepa-api-key-here"  # Replace with your actual key
-    api = keepa.Keepa(api_key)
+    api_key = "your-keepa-api-key-here"
 
-    # Pick a few known ASINs from Home and Electronics for demo
-    asin_list = [
-        "B07PGL2ZSL",  # Example: Echo Dot (Electronics)
-        "B08N5WRWNW",  # Example: Fire TV Stick (Electronics)
-        "B07XJ8C8F5",  # Example: Instant Pot (Home & Kitchen)
-        "B08V83JZH4"   # Example: Air Fryer (Home Appliance)
-    ]
+    try:
+        api = keepa.Keepa(api_key)
+        asin_list = [
+            "B07PGL2ZSL",  # Echo Dot
+            "B08N5WRWNW",  # Fire TV Stick
+            "B07XJ8C8F5",  # Instant Pot
+            "B08V83JZH4"   # Air Fryer
+        ]
+        product_data = api.query(asin_list, domain='US')
+        df = pd.json_normalize(product_data['products'])
+        return df
 
-    # Query product data
-    product_data = api.query(asin_list, domain='US')
+    except Exception as e:
+        st.error(f"⚠️ Live data fetch failed: {e}")
+        st.warning("Loading mock data instead...")
 
-    # Normalize into dataframe
-    df = pd.json_normalize(product_data['products'])
-    return df
+        # Fallback mock data
+        data = {
+            "title": ["Mock Echo Dot", "Mock Fire Stick", "Mock Instant Pot", "Mock Air Fryer"],
+            "current_price": [49.99, 39.99, 89.99, 129.99],
+            "imagesCSV": [
+                "https://via.placeholder.com/150",
+                "https://via.placeholder.com/150",
+                "https://via.placeholder.com/150",
+                "https://via.placeholder.com/150"
+            ],
+            "categoryTree": ["Electronics", "Electronics", "Home & Kitchen", "Appliances"]
+        }
+        df = pd.DataFrame(data)
+        return df
 
 
 def mock_predict_future_price(current_price):
