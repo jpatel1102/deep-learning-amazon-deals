@@ -10,15 +10,17 @@ from transformers import pipeline
 # --------------------
 st.set_page_config(page_title="Amazon Home & Electronics Deals", layout="wide")
 
+# Load Logo
+st.image("2c0af6b7-6d17-48d9-916e-6bbc8ee3e63e.png", width=120)
+
+# Title
 st.markdown(
     '''
-    <div style="display: flex; align-items: center; justify-content: center; margin-bottom: 20px;">
-        <img src="logo.png" width="120">
-        <h1 style="padding-left: 20px; font-size: 2.5em;">Deep Learning Amazon Deals Advisor</h1>
-    </div>
+    <h1 style="text-align: center; font-size: 2.5em;">Deep Learning Amazon Deals Advisor</h1>
     ''',
     unsafe_allow_html=True
 )
+
 
 # --------------------
 # Helper Functions
