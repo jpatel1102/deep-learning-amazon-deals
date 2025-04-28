@@ -25,11 +25,24 @@ st.markdown(
 # --------------------
 
 def fetch_deals():
-    api_key = "3kj4vv6neism9vvejf9515cva29hhcr2td3qfumps2o329p0j5jvdffm8oldkfaq"  # <<-- directly here
+    api_key = "your-keepa-api-key-here"  # Replace with your actual key
     api = keepa.Keepa(api_key)
-    deals = api.query(domain='US', price_category='new', page=0, perPage=50)
-    df = pd.json_normalize(deals)
+
+    # Pick a few known ASINs from Home and Electronics for demo
+    asin_list = [
+        "B07PGL2ZSL",  # Example: Echo Dot (Electronics)
+        "B08N5WRWNW",  # Example: Fire TV Stick (Electronics)
+        "B07XJ8C8F5",  # Example: Instant Pot (Home & Kitchen)
+        "B08V83JZH4"   # Example: Air Fryer (Home Appliance)
+    ]
+
+    # Query product data
+    product_data = api.query(asin_list, domain='US')
+
+    # Normalize into dataframe
+    df = pd.json_normalize(product_data['products'])
     return df
+
 
 def mock_predict_future_price(current_price):
     drop_percent = 0.05 + 0.1 * (time.time() % 1)
