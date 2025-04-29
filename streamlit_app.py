@@ -65,8 +65,8 @@ if 'categoryTree' in deals_df.columns:
     deals_df = deals_df[deals_df['categoryTree'].astype(str).str.contains('|'.join(categories_of_interest), case=False, na=False)]
 
 # Basic filters
-min_price = st.sidebar.slider('Minimum Price ($)', 0, 500, 20)
-max_price = st.sidebar.slider('Maximum Price ($)', 50, 2000, 500)
+price_range = st.sidebar.slider('Price Range ($)', 0, 2000, (50, 500), step=5)
+min_price, max_price = price_range
 min_rating = st.sidebar.slider('Minimum Rating', 0.0, 5.0, 3.5, 0.1)
 
 # Process pricing
@@ -104,7 +104,7 @@ for idx, row in deals_df.iterrows():
         # Predicted Future Price
         future_price = mock_predict_future_price(row.get('current_price', 0))
         st.markdown(f"**Predicted Future Price:** ${future_price}")
-        
+
         # ➡️ Add Product Link
         asin = row.get('asin', None)
         if asin:
