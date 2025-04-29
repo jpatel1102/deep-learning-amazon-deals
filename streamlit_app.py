@@ -104,7 +104,7 @@ for idx, row in deals_df.iterrows():
         # Predicted Future Price
         future_price = mock_predict_future_price(row.get('current_price', 0))
         st.markdown(f"**Predicted Future Price:** ${future_price}")
-
+        
         # ➡️ Add Product Link
         asin = row.get('asin', None)
         if asin:
