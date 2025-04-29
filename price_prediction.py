@@ -10,7 +10,7 @@ from tensorflow.keras.layers import LSTM, Dense
 # ---------------
 # SETTINGS
 # ---------------
-INPUT_CSV = "collected_deals.csv"
+INPUT_CSV = "data/collected_deals.csv"
 df = pd.read_csv(INPUT_CSV)
 MODEL_OUTPUT = "models/price_predictor_lstm.h5"
 
