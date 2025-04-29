@@ -27,7 +27,7 @@ def fetch_deals():
         print("Querying ASINs...")
         products = api.query(ASIN_LIST, domain='US')
 
-        df = pd.json_normalize(products['products'])
+        df = pd.json_normalize(products)
         return df
 
     except Exception as e:
