@@ -12,3 +12,6 @@ streamlit
 pandas
 keepa
 transformers
+beautifulsoup4
+os
+keras
