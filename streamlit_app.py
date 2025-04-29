@@ -26,8 +26,8 @@ st.markdown(
 # --------------------
 
 def fetch_deals():
-    if os.path.exists("collected_deals.csv"):
-        df = pd.read_csv("collected_deals.csv")
+    if os.path.exists("data/collected_deals.csv"):
+        df = pd.read_csv("data/collected_deals.csv")
         st.success("✅ Loaded deals from collected_deals.csv!")
         return df
     else:
